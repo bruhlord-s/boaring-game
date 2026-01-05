@@ -1,6 +1,7 @@
 <script setup>
   import { useGameStore } from '../stores/gameStore'
   import { onMounted, useTemplateRef } from 'vue'
+  import TypeLetter from './TypeLetter.vue'
 
   const game = useGameStore()
   const input = useTemplateRef('textInput')
@@ -23,15 +24,14 @@
     <div>{{ game.typedText }}</div>
     <div class="text-wrapper">
       <span class="word" v-for="(word, index) in game.textTokens">
-        <span v-if="index !== game.currentTokenIndex">{{ word }}</span>
-        <span v-else>
-          <span
-            v-for="letter in word.split('')"
-            class="word-letter"
-          >
-            {{ letter }}
-          </span>
+        <span class="correct-word" v-if="index < game.currentTokenIndex && word === game.typedTextTokens[index]">
+          {{ game.typedTextTokens[index] }}
         </span>
+        <span v-else-if="index > game.currentTokenIndex">{{ word }}</span>
+        <span v-else>
+          <TypeLetter :index />
+        </span>
+        <span>&nbsp;</span>
       </span>
     </div>
   </div>
@@ -50,5 +50,13 @@
     color: transparent;
     caret-color: transparent; /* Скрыть курсор */
     z-index: 10;
+  }
+
+  .word {
+    font-size: 20px;
+  }
+
+  .correct-word {
+    color: green;
   }
 </style>

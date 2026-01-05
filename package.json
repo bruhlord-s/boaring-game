@@ -20,6 +20,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
+    "electron-devtools-installer": "^4.0.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.26"
   },
