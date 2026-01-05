@@ -30,7 +30,7 @@ watch(
     v-for="(letter, letterIndex) in renderWord.split('')"
     class="word-letter"
     :class="{
-      current: letterIndex === game.currentTypeIndex && index === game.currentTokenIndex,
+      current: letterIndex === game.currentTypeIndex - 1 && index === game.currentTokenIndex,
       incorrect: incorrectIndexes.includes(letterIndex) || letterIndex > word.length,
       correct:
         !incorrectIndexes.includes(letterIndex) &&
@@ -50,7 +50,7 @@ watch(
   content: '';
   position: absolute;
   top: 0;
-  left: -2px;
+  right: -2px;
   width: 2px;
   height: 1.3em;
   background-color: currentColor;
