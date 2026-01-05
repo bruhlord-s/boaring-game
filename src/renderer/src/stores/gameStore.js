@@ -66,31 +66,43 @@ export const useGameStore = defineStore('game-store', () => {
     currentTypeIndex.value = 0
   }
 
+  const reset = () => {
+    resetTextData()
+    round.value = 1
+    isGameOver.value = false
+    isRoundWon.value = false
+    isPreGame.value = false
+    gameStarted.value = false
+    playerCloseToDeath.value = false
+
+    stopPlayerDamageInterval()
+  }
+
   const gameStarted = ref(false)
   const startGame = () => {
     gameStarted.value = true
+    isPreGame.value = false
+    startPlayerDamageInterval()
+    spawnBoar(1)
+    setupText()
+    console.warn('Игра запущена')
+  }
+
+  const prepareGame = () => {
+    isPreGame.value = true
+    gameStarted.value = true
+    console.warn('Game prepared')
   }
 
   const endGame = () => {
-    gameStarted.value = false
     boar.value.currentHealth = boar.value.maxHealth
     player.value.currentHealth = player.value.maxHealth
 
-    isGameOver.value = false
-    playerCloseToDeath.value = false
-
-    if (playerDamageInterval.value) {
-      clearInterval(playerDamageInterval.value)
-      playerDamageInterval.value = undefined
-    }
+    reset()
   }
 
   const endRound = () => {
-    if (playerDamageInterval.value) {
-      clearInterval(playerDamageInterval.value)
-      playerDamageInterval.value = undefined
-    }
-
+    stopPlayerDamageInterval()
     isRoundWon.value = true
     resetTextData()
   }
@@ -106,6 +118,14 @@ export const useGameStore = defineStore('game-store', () => {
 
     resetTextData()
     startPlayerDamageInterval()
+    console.warn('Следующий раунд запущен')
+  }
+
+  const stopPlayerDamageInterval = () => {
+    if (playerDamageInterval.value) {
+      clearInterval(playerDamageInterval.value)
+      playerDamageInterval.value = undefined
+    }
   }
 
   const startPlayerDamageInterval = () => {
@@ -145,12 +165,6 @@ export const useGameStore = defineStore('game-store', () => {
 
     return typedTextTokens.value[wordIndex] === textTokens.value[wordIndex]
   }
-
-  watch(isPreGame, () => {
-    if (isPreGame.value === false) {
-      startPlayerDamageInterval()
-    }
-  })
 
   watch(
     () => boar.value.currentHealth,
@@ -220,6 +234,7 @@ export const useGameStore = defineStore('game-store', () => {
 
     nextRound,
     setupText,
+    prepareGame,
     startGame,
     endGame,
     handleInput,

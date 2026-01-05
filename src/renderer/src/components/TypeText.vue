@@ -18,13 +18,14 @@ watch(
 onMounted(() => {
   text.value = game.typedText
 
-  document.addEventListener('keyup', (e) => handleKeyup(e))
-  input.value.addEventListener('keydown', (e) => disableArrows(e))
+  document.addEventListener('keyup', handleKeyup)
+  input.value.addEventListener('keydown', disableArrows)
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('keyup', (e) => handleKeyup(e))
-  input.value.removeEventListener('keydown', (e) => disableArrows(e))
+  console.error('Unmounted')
+  document.removeEventListener('keyup', handleKeyup)
+  input.value.removeEventListener('keydown', disableArrows)
 })
 
 const handleKeyup = (e) => {
@@ -43,10 +44,8 @@ const handleKeyup = (e) => {
   }
 
   if (game.isPreGame && e.key === 'Enter') {
-    game.isPreGame = false
+    game.startGame()
     input.value.focus()
-
-    game.setupText()
   }
 }
 

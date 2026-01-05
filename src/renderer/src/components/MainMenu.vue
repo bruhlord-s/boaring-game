@@ -22,8 +22,9 @@ const handleKeyup = (e) => {
 }
 
 const onStart = () => {
-  game.startGame()
-  game.isPreGame = true
+  if (!game.gameStarted) {
+    game.prepareGame()
+  }
 }
 </script>
 
