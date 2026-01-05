@@ -5,11 +5,12 @@ import { processSpaceInput } from '../functions/processSpace'
 import { processDelete } from '../functions/processDelete'
 import { damagePlayer } from '../functions/damagePlayer'
 import { checkIfPlayerCloseToDeath, checkIfPlayerDead } from '../functions/playerChecks'
+import { boarDeadSound } from '../functions/damageEnemy'
 
 export const useGameStore = defineStore('game-store', () => {
   const boar = ref({
-    maxHealth: 100,
-    currentHealth: 100,
+    maxHealth: 10,
+    currentHealth: 10,
     isDead: false
   })
 
@@ -134,6 +135,7 @@ export const useGameStore = defineStore('game-store', () => {
     () => {
       if (boar.value.currentHealth <= 0) {
         boar.value.isDead = true
+        boarDeadSound.play()
         endRound()
       }
     }
