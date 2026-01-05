@@ -20,6 +20,8 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    mainWindow.maximize()
+    mainWindow.setFullScreen(true)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
