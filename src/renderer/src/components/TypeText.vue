@@ -8,15 +8,18 @@ const text = ref('')
 
 const input = useTemplateRef('textInput')
 
-watch(() => game.typedText, () => {
-  text.value = game.typedText
-})
+watch(
+  () => game.typedText,
+  () => {
+    text.value = game.typedText
+  }
+)
 
 onMounted(() => {
   text.value = game.typedText
 
   document.addEventListener('keyup', (e) => handleKeyup(e))
-  input.value.addEventListener('keydown', (e) => disableArrows(e));
+  input.value.addEventListener('keydown', (e) => disableArrows(e))
 })
 
 onBeforeUnmount(() => {
@@ -27,6 +30,18 @@ onBeforeUnmount(() => {
 const handleKeyup = (e) => {
   e.preventDefault()
 
+  if (game.isGameOver && e.key === 'Enter') {
+    game.endGame()
+
+    return
+  }
+
+  if (game.isRoundWon && e.key === 'Enter') {
+    game.nextRound()
+
+    return
+  }
+
   if (game.isPreGame && e.key === 'Enter') {
     game.isPreGame = false
     input.value.focus()
@@ -36,10 +51,15 @@ const handleKeyup = (e) => {
 }
 
 const disableArrows = (e) => {
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
-    e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
-    e.key === 'Home' || e.key === 'End') {
-    e.preventDefault();
+  if (
+    e.key === 'ArrowLeft' ||
+    e.key === 'ArrowRight' ||
+    e.key === 'ArrowUp' ||
+    e.key === 'ArrowDown' ||
+    e.key === 'Home' ||
+    e.key === 'End'
+  ) {
+    e.preventDefault()
   }
 }
 
@@ -65,6 +85,16 @@ const handleChangeInput = () => {
       <div v-if="game.isPreGame" class="pre-game">
         <span>КАБАН ожидает ваших действий</span>
         <span>Нажмите <b>[Enter]</b> когда будете готовы сразиться с КАБАНОМ</span>
+      </div>
+
+      <div v-else-if="game.isGameOver" class="pre-game">
+        <span>Вас ЗАКАБАНИЛИ и растоптали</span>
+        <span>Нажмите <b>[Enter]</b> чтобы вернуться домой</span>
+      </div>
+
+      <div v-else-if="game.isRoundWon" class="pre-game">
+        <span>КАБАН повержен</span>
+        <span>Нажмите <b>[Enter]</b> чтобы пройти дальше</span>
       </div>
 
       <div v-else>

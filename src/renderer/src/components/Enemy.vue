@@ -2,19 +2,25 @@
 import { computed } from 'vue'
 import brokenBoar from '../../assets/broken-boar.png'
 import boar from '../../assets/boar-pxlz.png'
+import { useGameStore } from '../stores/gameStore'
 
-const props = defineProps({
-  isDead: Boolean
-})
+const game = useGameStore()
 
 const boarSprite = computed(() => {
-  return props.isDead ? brokenBoar : boar
+  return game.boar.isDead ? brokenBoar : boar
+})
+
+const health = computed(() => {
+  return `${(game.boar.currentHealth / game.boar.maxHealth) * 100}%`
 })
 </script>
 
 <template>
   <div class="enemy">
-    <div class="enemy__health">кабан</div>
+    <div class="enemy__health">
+      <span>кабан</span>
+      <div class="enemy__health-inner" :style="{ width: health }"></div>
+    </div>
     <img class="enemy__portrait" :src="boarSprite" />
   </div>
 </template>
@@ -38,6 +44,19 @@ const boarSprite = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #303030;
+}
+
+.enemy__health span {
+  z-index: 2;
+}
+
+.enemy__health-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 32px;
+  z-index: 1;
   background: linear-gradient(#990000, #5a0000);
 }
 
@@ -46,6 +65,7 @@ const boarSprite = computed(() => {
   align-items: center;
   justify-content: center;
   position: absolute;
+  z-index: 999;
   left: -20px;
   content: '1';
   font-size: 32px;

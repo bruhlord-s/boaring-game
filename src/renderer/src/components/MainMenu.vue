@@ -22,8 +22,8 @@ const handleKeyup = (e) => {
 }
 
 const onStart = () => {
-  game.isPreGame = true
   game.startGame()
+  game.isPreGame = true
 }
 </script>
 
