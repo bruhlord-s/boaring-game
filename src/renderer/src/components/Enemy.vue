@@ -18,6 +18,7 @@ const health = computed(() => {
 <template>
   <div class="enemy">
     <div class="enemy__health">
+      <span class="enemy__level">{{ game.round }}</span>
       <span>кабан</span>
       <div class="enemy__health-inner" :style="{ width: health }"></div>
     </div>
@@ -60,14 +61,13 @@ const health = computed(() => {
   background: linear-gradient(#990000, #5a0000);
 }
 
-.enemy__health::before {
+.enemy__level {
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   z-index: 999;
   left: -20px;
-  content: '1';
   font-size: 32px;
   width: 56px;
   height: 56px;
