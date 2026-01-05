@@ -6,6 +6,7 @@ import { processDelete } from '../functions/processDelete'
 import { damagePlayer } from '../functions/damagePlayer'
 import { checkIfPlayerCloseToDeath, checkIfPlayerDead } from '../functions/playerChecks'
 import { boarDeadSound } from '../functions/damageEnemy'
+import { getIncorrectIndexes } from '../functions/wordCompare'
 
 export const useGameStore = defineStore('game-store', () => {
   const boar = ref({
@@ -143,6 +144,7 @@ export const useGameStore = defineStore('game-store', () => {
 
   const handleInput = (input) => {
     console.log(`Handle input: ${input}`)
+    const startMistakes = getIncorrectIndexes(currentTypeWord.value, currentToken.value).length
 
     const isSpace = input[input.length - 1] === ' '
     const isDelete = typedText.value.length > input.length
@@ -167,6 +169,12 @@ export const useGameStore = defineStore('game-store', () => {
     typedTextTokens.value = typedText.value.split(' ')
 
     currentTypeIndex.value++
+
+    const endMistakes = getIncorrectIndexes(currentTypeWord.value, currentToken.value).length
+
+    if (endMistakes - startMistakes > 0) {
+      damagePlayer(2, true)
+    }
   }
 
   const currentTypeWord = computed(() => typedTextTokens.value[currentTokenIndex.value])
