@@ -65,3 +65,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@font-face {
+  font-family: 'Stalinist Regular';
+  src: url('./StalinistOne-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('./RobotoMono-VariableFont_wght.ttf');
+}
