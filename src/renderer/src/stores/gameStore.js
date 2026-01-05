@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { shouldSkip } from '../functions/shouldSkip'
+import { processSpaceInput } from '../functions/processSpace'
+import { processDelete } from '../functions/processDelete'
 
 export const useGameStore = defineStore('game-store', () => {
   const boar = ref({
@@ -47,52 +50,44 @@ export const useGameStore = defineStore('game-store', () => {
     currentTypeIndex.value = 0
   }
 
-  // По сути основной метод отслеживания позиции, можно сделать не вотчером а вызовом метода в теории
-  watch(typedText, (cur, prev) => {
-    const isSpace = cur[cur.length - 1] === ' '
-    const isDelete = prev.length > cur.length
+  /** По индексу слова возвращает верно ли оно было введено */
+  const wordIsCorrect = (wordIndex) => {
+    if (wordIndex < 0) {
+      return false
+    }
 
-    const typedWords = typedText.value?.split(' ').filter((w) => w) ?? []
-    const lastTypedWord = typedWords.length > 0 ? typedWords[typedWords.length - 1] : ''
+    return typedTextTokens.value[wordIndex] === textTokens.value[wordIndex]
+  }
 
-    // Если это не удаление, то можно проверять корректность слова через getIncorrectIndexes и наносить урон
+  const handleInput = (input) => {
+    console.log(`Handle input: ${input}`)
 
-    console.log(isSpace, lastTypedWord, currentToken.value)
+    const isSpace = input[input.length - 1] === ' '
+    const isDelete = typedText.value.length > input.length
+    console.log(`Is delete: ${isDelete}`)
+    console.log(`Typed text: ${typedText.value}`)
 
-    // Если пробел пытаются поставить в середине слова, то нужно это игнорировать
-    if (isSpace && lastTypedWord.length < currentToken.value.length) {
+    if (shouldSkip(input, isDelete)) {
       return
     }
 
-    // Переход к следующему слову после нажатия на пробел
-    if (isSpace && lastTypedWord.length >= currentToken.value.length && !isDelete) {
-      // Здесь можно проверять корректность слова и наносить урон
-      currentTokenIndex.value++
-      currentToken.value = textTokens.value[currentTokenIndex.value]
-      currentTypeIndex.value = 0
-      typedTextTokens.value = typedText.value.split(' ')
-
+    if (!isDelete && isSpace) {
+      processSpaceInput(input)
       return
     }
 
-    // Если это удаление и переход на прошлое слово, то нужно поменять индекс
-    if (isDelete && prev[prev.length - 1] === ' ') {
-      Math.max(currentTokenIndex.value--, 0)
-      currentToken.value = textTokens.value[currentTokenIndex.value]
-      currentTypeIndex.value = currentToken.value.length
-      typedTextTokens.value = typedText.value.split(' ')
+    if (isDelete) {
+      processDelete(input)
       return
     }
 
-    typedTextTokens.value = typedWords
+    typedText.value = input
+    typedTextTokens.value = typedText.value.split(' ')
 
-    // Изменения индекса каретки
-    if (!isDelete) {
-      currentTypeIndex.value++
-    } else {
-      Math.max(currentTypeIndex.value--, 0)
-    }
-  })
+    currentTypeIndex.value++
+  }
+
+  const currentTypeWord = computed(() => typedTextTokens.value[currentTokenIndex.value])
 
   return {
     boar,
@@ -104,10 +99,13 @@ export const useGameStore = defineStore('game-store', () => {
     typedText,
     typedTextTokens,
     currentTypeIndex,
+    currentTypeWord,
     gameStarted,
     isPreGame,
 
     setupText,
-    startGame
+    startGame,
+    handleInput,
+    wordIsCorrect
   }
 })

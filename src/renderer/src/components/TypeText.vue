@@ -1,13 +1,20 @@
 <script setup>
 import { useGameStore } from '../stores/gameStore'
-import { onBeforeUnmount, onMounted, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import TypeLetter from './TypeLetter.vue'
 
 const game = useGameStore()
+const text = ref('')
 
 const input = useTemplateRef('textInput')
 
+watch(() => game.typedText, () => {
+  text.value = game.typedText
+})
+
 onMounted(() => {
+  text.value = game.typedText
+
   document.addEventListener('keyup', (e) => handleKeyup(e))
 })
 
@@ -25,16 +32,22 @@ const handleKeyup = (e) => {
     game.setupText()
   }
 }
+
+const handleChangeInput = () => {
+  game.handleInput(text.value)
+  text.value = game.typedText
+}
 </script>
 
 <template>
   <div class="type-text">
     <input
       ref="textInput"
-      v-model="game.typedText"
+      v-model="text"
       type="text"
       class="game-input"
       @focusout="input.focus()"
+      @input="handleChangeInput"
     />
 
     <div class="typed-text" :v-show="false">{{ game.typedText }}</div>
