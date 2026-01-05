@@ -1,10 +1,11 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import brokenBoar from '../../assets/broken-boar.png'
 import boar from '../../assets/boar-pxlz.png'
 import { useGameStore } from '../stores/gameStore'
 
 const game = useGameStore()
+const damages = ref([])
 
 const boarSprite = computed(() => {
   return game.boar.isDead ? brokenBoar : boar
@@ -13,6 +14,16 @@ const boarSprite = computed(() => {
 const health = computed(() => {
   return `${(game.boar.currentHealth / game.boar.maxHealth) * 100}%`
 })
+
+// Отслеживание получения урона кабаном
+watch(() => game.boar.currentHealth, (cur, prev) => {
+  damages.value.push(prev - cur)
+
+  setTimeout(() => {
+    damages.value.shift()
+  }, 1500)
+})
+
 </script>
 
 <template>
@@ -23,6 +34,16 @@ const health = computed(() => {
       <div class="enemy__health-inner" :style="{ width: health }"></div>
     </div>
     <img class="enemy__portrait" :src="boarSprite" />
+
+    <div class="damage__container">
+      <span
+        v-for="(dmg, index) in damages"
+        :key="index"
+        class="damage__value"
+      >
+        {{ dmg }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -32,6 +53,7 @@ const health = computed(() => {
   flex-direction: column;
   align-items: center;
   gap: 48px;
+  position: relative;
 }
 
 .enemy__health {
@@ -85,6 +107,33 @@ const health = computed(() => {
   will-change: transform;
 }
 
+.damage__container {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 50px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.damage__value {
+  position: absolute;
+  font-size: 40px;
+  font-weight: 900;
+  color: #ff3333;
+  text-shadow:
+    0 0 5px #ff3333,
+    0 0 10px rgba(255, 255, 255, 0.5),
+    2px 2px 0 rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transform-origin: center;
+  animation: floatUp 1.5s ease-out forwards;
+  bottom: 50%;
+}
+
 @keyframes breathing {
   0%,
   100% {
@@ -92,6 +141,28 @@ const health = computed(() => {
   }
   50% {
     transform: scale(0.95);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.2);
+  }
+  40% {
+    transform: translateY(-40px) scale(1.1);
+  }
+  70% {
+    opacity: 0.8;
+    transform: translateY(-60px) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(0.7);
   }
 }
 </style>
