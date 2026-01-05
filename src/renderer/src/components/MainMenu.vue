@@ -1,11 +1,28 @@
 <script setup>
 import { useGameStore } from '../stores/gameStore'
 import brokenBoar from '../../assets/broken-boar.png'
+import { onBeforeUnmount, onMounted } from 'vue'
 
 const game = useGameStore()
 
+onMounted(() => {
+  document.addEventListener('keyup', (e) => handleKeyup(e))
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keyup', (e) => handleKeyup(e))
+})
+
+const handleKeyup = (e) => {
+  e.preventDefault()
+
+  if (e.key === 'Enter') {
+    onStart()
+  }
+}
+
 const onStart = () => {
-  game.setupText('Тестирование старта игры нужно будет переделать')
+  game.isPreGame = true
   game.startGame()
 }
 </script>
