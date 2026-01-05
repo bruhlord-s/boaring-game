@@ -33,7 +33,13 @@ watch(() => game.boar.currentHealth, (cur, prev) => {
       <span>кабан</span>
       <div class="enemy__health-inner" :style="{ width: health }"></div>
     </div>
-    <img class="enemy__portrait" :src="boarSprite" />
+    <img
+      class="enemy__portrait"
+      :src="boarSprite"
+      :style="{
+        scale: 0.3 + 0.1 * game.round
+      }"
+    />
 
     <div class="damage__container">
       <span
