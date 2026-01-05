@@ -17,6 +17,10 @@ const health = computed(() => {
 
 // Отслеживание получения урона кабаном
 watch(() => game.boar.currentHealth, (cur, prev) => {
+  if (prev - cur < 0) {
+    return
+  }
+
   damages.value.push(prev - cur)
 
   setTimeout(() => {
