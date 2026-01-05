@@ -16,10 +16,12 @@ onMounted(() => {
   text.value = game.typedText
 
   document.addEventListener('keyup', (e) => handleKeyup(e))
+  input.value.addEventListener('keydown', (e) => disableArrows(e));
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('keyup', (e) => handleKeyup(e))
+  input.value.removeEventListener('keydown', (e) => disableArrows(e))
 })
 
 const handleKeyup = (e) => {
@@ -30,6 +32,14 @@ const handleKeyup = (e) => {
     input.value.focus()
 
     game.setupText()
+  }
+}
+
+const disableArrows = (e) => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+    e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+    e.key === 'Home' || e.key === 'End') {
+    e.preventDefault();
   }
 }
 
