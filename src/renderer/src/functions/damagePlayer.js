@@ -1,5 +1,6 @@
 import { useGameStore } from '../stores/gameStore'
 import { Howl } from 'howler'
+import BoarBite from '@sounds/boar_bite.ogg'
 
 export const damagePlayer = (amount, sound = false) => {
   const game = useGameStore()
@@ -15,5 +16,5 @@ export const damagePlayer = (amount, sound = false) => {
 }
 
 const damagePlayerSound = new Howl({
-  src: ['../../assets/sounds/boar_bite.ogg']
+  src: [BoarBite]
 })

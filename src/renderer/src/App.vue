@@ -5,6 +5,7 @@ import { useGameStore } from './stores/gameStore'
 import GameScene from './components/GameScene.vue'
 import { onMounted, onUnmounted } from 'vue'
 import { Howl } from 'howler'
+import Music from '@sounds/music.wav'
 
 const game = useGameStore()
 /** @var Howl */
@@ -12,7 +13,7 @@ let sound
 
 onMounted(() => {
   sound = new Howl({
-    src: ['../assets/sounds/music.wav'],
+    src: [Music],
     loop: true,
     autoplay: true,
   })

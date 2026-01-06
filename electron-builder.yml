@@ -9,7 +9,9 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
 asarUnpack:
-  - resources/**
+  - 'resources/**'
+  - '**/*.ogg'
+  - '**/*.wav'
 win:
   executableName: boaring-game
 nsis:
