@@ -1,6 +1,6 @@
 <script setup>
 import { useGameStore } from '../stores/gameStore'
-import brokenBoar from '../../assets/broken-boar.png'
+import brokenBoar from '../../assets/broken-boar2.png'
 import { onBeforeUnmount, onMounted } from 'vue'
 
 const game = useGameStore()

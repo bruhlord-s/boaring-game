@@ -31,6 +31,12 @@ onBeforeUnmount(() => {
 const handleKeyup = (e) => {
   e.preventDefault()
 
+  if (game.isGameWon && e.key === 'Enter') {
+    game.endGame()
+
+    return
+  }
+
   if (game.isGameOver && e.key === 'Enter') {
     game.endGame()
 
@@ -84,6 +90,12 @@ const handleChangeInput = () => {
       <div v-if="game.isPreGame" class="pre-game">
         <span>КАБАН ожидает ваших действий</span>
         <span>Нажмите <b>[Enter]</b> когда будете готовы сразиться с КАБАНОМ</span>
+      </div>
+
+      <div v-else-if="game.isGameWon" class="pre-game">
+        <span>Все КАБАНЫ побеждены</span>
+        <span>Спасибо за игру и не обижайте кабанов в рельной жизни</span>
+        <span>Нажмите <b>[Enter]</b> чтобы вернуться домой</span>
       </div>
 
       <div v-else-if="game.isGameOver" class="pre-game">

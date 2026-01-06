@@ -4,6 +4,10 @@ import { Howl } from 'howler'
 export const damagePlayer = (amount, sound = false) => {
   const game = useGameStore()
 
+  if (game.isRoundWon || game.isPreGame || game.isGameOver) {
+    return
+  }
+
   if (sound) {
     damagePlayerSound.play()
   }

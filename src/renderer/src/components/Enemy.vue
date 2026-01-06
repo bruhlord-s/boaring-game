@@ -1,56 +1,92 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import brokenBoar from '../../assets/broken-boar.png'
-import boar from '../../assets/boar-pxlz.png'
 import { useGameStore } from '../stores/gameStore'
+import boar1 from '../../assets/boar1.png'
+import boar2 from '../../assets/boar2.png'
+import boar3 from '../../assets/boar3.png'
+import boar4 from '../../assets/boar4.png'
+import boar5 from '../../assets/boar5.png'
+import boar6 from '../../assets/boar6.png'
+import boar7 from '../../assets/boar7.png'
+import brokenBoar1 from '../../assets/broken-boar1.png'
+import brokenBoar2 from '../../assets/broken-boar2.png'
+import brokenBoar3 from '../../assets/broken-boar3.png'
+import brokenBoar4 from '../../assets/broken-boar4.png'
+import brokenBoar5 from '../../assets/broken-boar5.png'
+import brokenBoar6 from '../../assets/broken-boar6.png'
+import brokenBoar7 from '../../assets/broken-boar7.png'
 
 const game = useGameStore()
 const damages = ref([])
 
 const boarSprite = computed(() => {
-  return game.boar.isDead ? brokenBoar : boar
+  // простите
+  const dict = {
+    boar1,
+    boar2,
+    boar3,
+    boar4,
+    boar5,
+    boar6,
+    boar7,
+    brokenBoar1,
+    brokenBoar2,
+    brokenBoar3,
+    brokenBoar4,
+    brokenBoar5,
+    brokenBoar7,
+    brokenBoar6
+  }
+
+  return game.boar.isDead ? dict[`brokenBoar${game.round}`] : dict[`boar${game.round}`]
 })
 
 const health = computed(() => {
   return `${(game.boar.currentHealth / game.boar.maxHealth) * 100}%`
 })
 
-// Отслеживание получения урона кабаном
-watch(() => game.boar.currentHealth, (cur, prev) => {
-  if (prev - cur < 0) {
-    return
-  }
+const name = computed(() => {
+  const names = [
+    'кабан',
+    'кабан-мороз',
+    'кабан кабаныч',
+    'кабан-хацкер',
+    'этот белый',
+    'набак',
+    'sus кабан'
+  ]
 
-  damages.value.push(prev - cur)
-
-  setTimeout(() => {
-    damages.value.shift()
-  }, 1500)
+  return names[game.round - 1]
 })
 
+// Отслеживание получения урона кабаном
+watch(
+  () => game.boar.currentHealth,
+  (cur, prev) => {
+    if (prev - cur < 0) {
+      return
+    }
+
+    damages.value.push(prev - cur)
+
+    setTimeout(() => {
+      damages.value.shift()
+    }, 1500)
+  }
+)
 </script>
 
 <template>
   <div class="enemy">
     <div class="enemy__health">
       <span class="enemy__level">{{ game.round }}</span>
-      <span>кабан</span>
+      <span>{{ name }}</span>
       <div class="enemy__health-inner" :style="{ width: health }"></div>
     </div>
-    <img
-      class="enemy__portrait"
-      :src="boarSprite"
-      :style="{
-        scale: 0.3 + 0.1 * game.round
-      }"
-    />
+    <img class="enemy__portrait" :src="boarSprite" />
 
     <div class="damage__container">
-      <span
-        v-for="(dmg, index) in damages"
-        :key="index"
-        class="damage__value"
-      >
+      <span v-for="(dmg, index) in damages" :key="index" class="damage__value">
         {{ dmg }}
       </span>
     </div>
